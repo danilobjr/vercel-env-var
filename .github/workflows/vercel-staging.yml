@@ -16,7 +16,7 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --environment=preview --yes --token=${{ secrets.VERCEL_TOKEN }}
       
       - name: PWD
         run: pwd
@@ -24,14 +24,11 @@ jobs:
       - name: .vercel folder content
         run: ls -la ./.vercel
         
-      - name: .env.development.local file content
-        run: cat ./.vercel/.env.development.local
-        
       - name: .env.preview.local file content
         run: cat ./.vercel/.env.preview.local
 
       - name: Build Project Artifacts
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy Project Artifacts to Vercel
-        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
