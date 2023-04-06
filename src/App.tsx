@@ -1,8 +1,9 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
 
 function App() {
+  console.log("env var", process.env.REACT_APP_ENV_VAR);
+
   return (
     <div className="App">
       <header className="App-header">
