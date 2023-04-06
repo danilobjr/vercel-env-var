@@ -16,7 +16,16 @@ jobs:
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --environment=preview --yes --token=${{ secrets.VERCEL_TOKEN }}
+      
+      - name: PWD
+        run: pwd
+        
+      - name: .vercel folder content
+        run: ls -la ./.vercel
+        
+      - name: Env file content
+        run: cat ./.vercel/.env.preview.local
 
       - name: Build Project Artifacts
         run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
