@@ -1,0 +1,55 @@
+name: Preview Deployment
+
+on: 
+  workflow_dispatch:
+  pull_request_target:
+    paths:
+      - 'public/**'
+      - 'src/**'
+
+jobs:
+  deploy-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Trying to restore npm cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Generate .env
+        uses: SpicyPizza/create-envfile@v1.3.1
+        with:
+          envkey_REACT_APP_MY_VAR: ${{ secrets.MY_VAR }}
+          fail_on_empty: false
+          
+      - name: .env Content
+        run: cat .env
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy
+        uses: amondnet/vercel-action@v25
+        id: deploy
+        with:
+          working-directory: build
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Create Comment with Link
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: console.log(context)
