@@ -1,11 +1,13 @@
 name: Preview Deployment
 
-on: 
-  workflow_dispatch:
+on:
   pull_request_target:
     paths:
-      - 'public/**'
-      - 'src/**'
+      - "public/**"
+      - "src/**"
+      - "package.json"
+      - "tsconfig.json"
+      - "vercel.json"
 
 jobs:
   deploy-preview:
@@ -16,22 +18,22 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Trying to restore npm cache
+      - name: Generate .env
+        uses: SpicyPizza/create-envfile@v1.3.1
+        with:
+          envkey_REACT_APP_ENV_VAR: ${{ secrets.ENV_VAR }}
+          fail_on_empty: false
+
+      - name: Display .env Content
+        run: cat .env
+
+      - name: Try to restore npm cache
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
-      - name: Generate .env
-        uses: SpicyPizza/create-envfile@v1.3.1
-        with:
-          envkey_REACT_APP_ENV_VAR: ${{ secrets.ENV_VAR }}
-          fail_on_empty: false
-          
-      - name: .env Content
-        run: cat .env
 
       - name: Build
         run: |
@@ -48,7 +50,7 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      - name: Create Comment with Link
+      - name: Create Comment with Link on PR
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
