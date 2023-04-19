@@ -8,6 +8,9 @@ on:
       - "package.json"
       - "tsconfig.json"
       - "vercel.json"
+      
+permissions:
+  pull-requests: write
 
 jobs:
   deploy-preview:
