@@ -24,8 +24,8 @@ jobs:
           envkey_REACT_APP_ENV_VAR: ${{ secrets.ENV_VAR }}
           fail_on_empty: false
 
-      - name: Display .env Content
-        run: cat .env
+      - name: Display folder structure to see .env file created
+        run: ls -la
 
       - name: Try to restore npm cache
         uses: actions/cache@v3
