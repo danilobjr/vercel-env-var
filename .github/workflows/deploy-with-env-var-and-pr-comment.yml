@@ -27,7 +27,7 @@ jobs:
       - name: Generate .env
         uses: SpicyPizza/create-envfile@v1.3.1
         with:
-          envkey_REACT_APP_MY_VAR: ${{ secrets.MY_VAR }}
+          envkey_REACT_APP_ENV_VAR: ${{ secrets.ENV_VAR }}
           fail_on_empty: false
           
       - name: .env Content
